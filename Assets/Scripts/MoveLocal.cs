@@ -12,7 +12,7 @@ public class MoveLocal : MonoBehaviour
     UnityEngine.AI.NavMeshAgent agent;
     private Drive playerScript;
     private Animator spongebobAnimation;
-    float speed = 10.0f;
+    float speed;
 
 
 
@@ -23,6 +23,7 @@ public class MoveLocal : MonoBehaviour
         agent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
         playerScript = GameObject.Find("plankton").GetComponent<Drive>();
         spongebobAnimation = GetComponent<Animator>();
+        agent.speed=10.0f;
     }
     // Update is called once per frame
     void Update()
