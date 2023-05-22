@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class Drive : MonoBehaviour
 {
-
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI NextlevelText;
     public int score = 0;
     public float speed = 3.0F;
     public float rotationSpeed = 200.0F;
@@ -19,15 +20,63 @@ public class Drive : MonoBehaviour
     public Button restartButton2;
     public TextMeshProUGUI gameoverText2;
     public ParticleSystem ExplosionPlayer;
-
+    public Rigidbody playerrigid;
+    public static int socreValue; 
+    public static int level = 1;
 
     void Start()
     {
         updateScore(0);
         playerScript = GameObject.Find("Spongebob_Cute").GetComponent<MoveLocal>();
+        playerrigid = GetComponent<Rigidbody>();
+        socreValue = 3 + (level - 1);
+        levelText.text = "Level: " + level;
+        speed = 10.0f + (level - 1) * 1.1f;
+
+        Vector3 startingPosition = GetStartingPosition();
+        transform.position = startingPosition;
+
+        if (level > 1)
+        {
+            NextlevelText.gameObject.SetActive(true);
+            NextlevelText.text = "Level " + level;
+            StartCoroutine(HideLevelText());
+        }
     }
-    void Update()
+
+    IEnumerator HideLevelText()
     {
+        yield return new WaitForSeconds(0.6f);
+        NextlevelText.gameObject.SetActive(false);
+    }
+
+    Vector3 GetStartingPosition() {
+        Vector3 startingPosition = Vector3.zero;
+        switch (Drive.level)
+        {
+            case 1:
+                startingPosition = new Vector3(26.7F, 0.06F, -5.11F);
+                break;
+            case 2:
+                startingPosition = new Vector3(-3.19F, 0.08F, -3.23F);
+                break;
+            case 3:
+                startingPosition = new Vector3(-26, 0.3F, 26.8F); 
+                break;
+            case 4:
+                startingPosition = new Vector3(-3.19F, 0.08F, -3.23F);
+                break;
+            case 5:
+                startingPosition = new Vector3(26.7F, 0.06F, -5.11F);
+                break;
+            default:
+                startingPosition = new Vector3(26.7F, 0.06F, -5.11F); 
+                break;
+        }
+        return startingPosition;
+    }
+
+    void Update() {
         if (!gameover || !gameover2)
         {
             float translation = Input.GetAxis("Vertical") * speed;
@@ -37,11 +86,20 @@ public class Drive : MonoBehaviour
             transform.Translate(0, 0, translation);
             transform.Rotate(0, rotation, 0);
         }
-        if (score == 7)
+        if (score == socreValue)
         {
-            gameover = true;
-            gameover2 = true;
-            GameOverrrr();
+            if (level < 5) 
+            {
+                level += 1; 
+                socreValue = 3 + (level - 1);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            else
+            {
+                GameOverrrr();
+                gameover = true;
+                gameover2 = true;
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -64,14 +122,14 @@ public class Drive : MonoBehaviour
         score += scoreVal;
         scoreText.text = "Score : " + score;
     }
+    //winner
     public void GameOverrrr()
     {
         WinnerText.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
-        // playerScript.gameover2 = true;
-        // gameover = false;
     }
 
+    //lose game
     public void GameOver2()
     {
         gameoverText2.gameObject.SetActive(true);
@@ -80,6 +138,7 @@ public class Drive : MonoBehaviour
     }
     public void RestartGame()
     {
+        level = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-}
+} 

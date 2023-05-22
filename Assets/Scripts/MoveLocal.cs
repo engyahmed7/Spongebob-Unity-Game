@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class MoveLocal : MonoBehaviour
 {
     public GameObject game;
@@ -14,18 +13,17 @@ public class MoveLocal : MonoBehaviour
     private Animator spongebobAnimation;
     float speed;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindWithTag("Player");
         agent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
         playerScript = GameObject.Find("plankton").GetComponent<Drive>();
         spongebobAnimation = GetComponent<Animator>();
-        agent.speed=10.0f;
+        speed = 10.0f + (Drive.level - 1) * 2;
+        agent.speed = speed;
+        
     }
-    // Update is called once per frame
+
     void Update()
     {
         if (!playerScript.gameover || !playerScript.gameover2)
@@ -40,5 +38,3 @@ public class MoveLocal : MonoBehaviour
         }
     }
 }
-
-
